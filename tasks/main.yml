@@ -1,0 +1,47 @@
+---
+- name: Create common users
+  user:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+    create_home: yes
+    append: yes
+    groups: "{{ item.groups }}"
+    # password: "{{ item.password | password_hash('sha512') }}"
+    password: "{{ item.password }}"
+  with_items: "{{ users }}"
+
+- name: Make sure we have a 'wheel' group
+  group:
+    name: wheel
+    state: present
+
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+
+- name: Add sudoers users to wheel group
+  user: 
+    name: "{{ item.name }}"
+    groups: wheel
+    append: yes
+    state: "{{  item.state }}"
+  with_items: "{{ systemiphus_users }}"
+  when: item.sudo
+
+- name: Add public keys to created users
+  authorized_key:
+    user: "{{ item.name }}"
+    state: "{{ item.state }}"
+    key: "{{ item.key }}"
+  with_items: "{{ systemiphus_users }}"
+
+- name: Copy sshd config to host
+  copy:
+    src: "{{ role_path }}/files/sshd_config"
+    dest: "/etc/ssh/sshd_config"
+    force: yes
+  notify: Restart SSH
