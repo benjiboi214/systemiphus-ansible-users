@@ -10,7 +10,6 @@
     create_home: yes
     append: yes
     groups: "{{ item.groups }}"
-    # password: "{{ item.password | password_hash('sha512') }}"
     password: "{{ item.password }}"
   with_items: "{{ users }}"
 
@@ -33,7 +32,7 @@
     groups: wheel
     append: yes
     state: "{{  item.state }}"
-  with_items: "{{ systemiphus_users }}"
+  with_items: "{{ users }}"
   when: item.sudo
 
 - name: "Set key name based on input"
@@ -52,7 +51,7 @@
     user: "{{ item.name }}"
     state: "{{ item.state }}"
     key: "{{ item.key }}"
-  with_items: "{{ systemiphus_users }}"
+  with_items: "{{ users }}"
   when: not role_as_git_submodule
 
 - name: Add public keys to created users
@@ -60,7 +59,7 @@
     user: "{{ item.name }}"
     state: "{{ item.state }}"
     key: "{{ lookup('vars', item.name + '_key') }}"
-  with_items: "{{ systemiphus_users }}"
+  with_items: "{{ users }}"
   when: role_as_git_submodule
 
 - name: Copy sshd config to host
