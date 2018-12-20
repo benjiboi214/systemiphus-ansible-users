@@ -3,6 +3,12 @@
   set_fact:
     ansible_base_path: "{{ role_path }}/../../"
 
+- name: Create common groups
+  group:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+  with_items: "{{ common_groups }}"
+
 - name: Create common users
   user:
     name: "{{ item.name }}"

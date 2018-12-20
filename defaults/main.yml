@@ -5,8 +5,18 @@ users:
     state: "present"
     sudo: false
     groups:
-    key_name_location: "files/public_keys/example.pub"
-    key: "{{ lookup('file', '{{ role_path }}/files/public_key/example.pub') }}"
+      - developer
+      - example
+    # key_name_location: "files/public_keys/example.pub"
+    key: "{{ lookup('file', '{{ role_path }}/files/public_keys/example.pub') }}"
     password: $6$BQxqF/UCPvISm5A5$GMWKhaZPmrnW3orOFU9.DmIblDIIQI83Nho.Q7tCPdQEAUE.60kQtp3J.ylx2TQEIpKUdYbiQPGv/eVYAE8p3.
+
+common_groups:
+  - name: developer
+    state: present
+  - name: plebian
+    state: present
+  - name: example
+    state: present
 
 role_as_git_submodule: false
