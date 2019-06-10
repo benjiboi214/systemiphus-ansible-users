@@ -9,7 +9,7 @@
     state: "{{ item.state }}"
   with_items: "{{ common_groups }}"
 
-- name: Create common users
+- name: Create common users with passwords
   user:
     name: "{{ item.name }}"
     state: "{{ item.state }}"
@@ -18,6 +18,17 @@
     groups: "{{ item.groups }}"
     password: "{{ item.password }}"
   with_items: "{{ users }}"
+  when: item.password is defined
+
+- name: Create common users without passwords
+  user:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+    create_home: yes
+    append: yes
+    groups: "{{ item.groups }}"
+  with_items: "{{ users }}"
+  when: item.password is not defined
 
 - name: Make sure we have a 'wheel' group
   group:

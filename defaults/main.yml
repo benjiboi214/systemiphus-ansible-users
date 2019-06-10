@@ -14,9 +14,5 @@ users:
 common_groups:
   - name: developer
     state: present
-  - name: plebian
-    state: present
-  - name: example
-    state: present
 
 role_as_git_submodule: false
