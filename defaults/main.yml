@@ -14,5 +14,9 @@ users:
 common_groups:
   - name: developer
     state: present
+  - name: jenkins
+    state: present
+  - name: docker
+    state: present
 
 role_as_git_submodule: false
